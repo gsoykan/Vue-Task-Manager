@@ -17,6 +17,16 @@ router.post('/tasks', auth, async (req, res) => {
     }
 })
 
+router.post('/tasks/all', async (req, res) => {
+    const task = new Task(req.body)
+    try {
+        await task.save()
+        res.send(task)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
 router.get('/tasks', auth, async (req, res) => {
     try {
         // const tasks = await Task.find({ owner: req.user._id })
@@ -24,6 +34,15 @@ router.get('/tasks', auth, async (req, res) => {
         res.send(req.user.tasks)
     } catch (error) {
         res.status(500).send(error)
+    }
+})
+
+router.get('/tasks/all', async (req, res) => {
+    try {
+        const tasks = await Task.find({})
+        res.send(tasks)
+    } catch (error) {
+        res.status(500).send()
     }
 })
 
@@ -69,6 +88,20 @@ router.delete('/tasks/:id', auth, async (req, res) => {
         const task = await Task.findOneAndDelete({
             _id: req.params.id,
             owner: req.user._id
+        })
+        if (!task) {
+            res.status(404).send({ error: 'No task to delete' })
+        }
+        res.send(task)
+    } catch (error) {
+        res.status(500).send()
+    }
+})
+
+router.delete('/tasks/all/:id', async (req, res) => {
+    try {
+        const task = await Task.findOneAndDelete({
+            _id: req.params.id
         })
         if (!task) {
             res.status(404).send({ error: 'No task to delete' })

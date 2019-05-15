@@ -14,7 +14,8 @@ var taskSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'User',
+        default: mongoose.Types.ObjectId('5cdae2b4bdf4d0063dd2cbe3')
     }
 })
 
